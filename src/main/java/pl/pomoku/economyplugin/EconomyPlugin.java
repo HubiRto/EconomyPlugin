@@ -10,6 +10,7 @@ public final class EconomyPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
+        saveDefaultConfig();
     }
 
 }
