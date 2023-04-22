@@ -13,10 +13,11 @@ import javax.persistence.Id;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlayerBalance {
+public class TimePlayer {
     @Id
     private int id;
-    private double balance;
     private String playerUUID;
-    private String playerName;
+    private boolean tookAllMoney;
+    private int collectCounter;
+    private long lastTimeCollect;
 }

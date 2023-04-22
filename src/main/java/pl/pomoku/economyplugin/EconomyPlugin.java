@@ -9,6 +9,7 @@ import org.reflections.Reflections;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import pl.pomoku.economyplugin.manager.TimeIsMoneyManager;
 import pl.pomoku.economyplugin.service.PlayerBalanceService;
+import pl.pomoku.economyplugin.service.TimePlayerService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,6 +25,7 @@ public final class EconomyPlugin extends JavaPlugin {
     public static EconomyPlugin plugin;
     public static PlayerBalanceService playerBalanceService;
     public static TimeIsMoneyManager timeIsMoneyManager;
+    public static TimePlayerService timePlayerService;
 
     @SneakyThrows
     @Override
@@ -38,6 +40,8 @@ public final class EconomyPlugin extends JavaPlugin {
         applicationContext.refresh();
 
         playerBalanceService = (PlayerBalanceService) applicationContext.getBean("playerBalanceService");
+        timePlayerService = (TimePlayerService) applicationContext.getBean("timePlayerService");
+
         timeIsMoneyManager = new TimeIsMoneyManager();
         timeIsMoneyManager.run();
 
