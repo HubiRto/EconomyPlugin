@@ -55,7 +55,7 @@ public final class EconomyPlugin extends JavaPlugin {
 
     private void loadListenersAndCommands() {
         String packageName = getClass().getPackage().getName();
-        for (Class<?> clazz : new Reflections(packageName + ".listeners").getSubTypesOf(Listener.class)) {
+        for (Class<?> clazz : new Reflections(packageName + ".listener").getSubTypesOf(Listener.class)) {
             try {
                 Listener listener = (Listener) clazz.getDeclaredConstructor().newInstance();
                 getServer().getPluginManager().registerEvents(listener, this);
@@ -65,7 +65,7 @@ public final class EconomyPlugin extends JavaPlugin {
             }
         }
 
-        for (Class<? extends EzCommand> clazz : new Reflections(packageName + ".commands").getSubTypesOf(EzCommand.class)) {
+        for (Class<? extends EzCommand> clazz : new Reflections(packageName + ".command").getSubTypesOf(EzCommand.class)) {
             try {
                 EzCommand pluginCommand = clazz.getDeclaredConstructor().newInstance();
                 Objects.requireNonNull(getCommand(pluginCommand.getCommandInfo().name())).setExecutor(pluginCommand);
