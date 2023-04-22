@@ -38,7 +38,8 @@ public final class EconomyPlugin extends JavaPlugin {
         applicationContext.refresh();
 
         playerBalanceService = (PlayerBalanceService) applicationContext.getBean("playerBalanceService");
-        timeIsMoneyManager = new TimeIsMoneyManager(new HashMap<>(), new ArrayList<>());
+        timeIsMoneyManager = new TimeIsMoneyManager();
+        timeIsMoneyManager.run();
 
         loadListenersAndCommands();
     }

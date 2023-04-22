@@ -1,22 +1,18 @@
 package pl.pomoku.economyplugin.manager;
 
 import lombok.AllArgsConstructor;
-import org.bukkit.entity.Player;
-import pl.pomoku.economyplugin.model.Time;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.List;
-import java.util.Map;
+import static pl.pomoku.economyplugin.EconomyPlugin.plugin;
 
 @AllArgsConstructor
 public class TimeIsMoneyManager {
-    private Map<Player, Time> timeMap;
-    private List<Player> tookAllDayAwards;
+    public void run(){
+        new BukkitRunnable() {
+            @Override
+            public void run() {
 
-    public void addPlayerToSystem(Player player){
-        if(this.tookAllDayAwards.contains(player)) return;
-    }
-
-    public void removePlayerFromSystem(Player player){
-        timeMap.remove(player);
+            }
+        }.runTaskLaterAsynchronously(plugin, 5);
     }
 }

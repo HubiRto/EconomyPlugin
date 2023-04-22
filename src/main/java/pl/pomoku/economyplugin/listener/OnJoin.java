@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import pl.pomoku.economyplugin.entity.PlayerBalance;
 
-import static pl.pomoku.economyplugin.EconomyPlugin.playerBalanceService;
+import static pl.pomoku.economyplugin.EconomyPlugin.*;
 
 public class OnJoin implements Listener {
     @EventHandler
@@ -14,7 +14,7 @@ public class OnJoin implements Listener {
         Player player = event.getPlayer();
         PlayerBalance playerBalance = playerBalanceService.findPlayerBalanceByPlayer(player);
         if (playerBalance != null) {
-            //TODO: Add player to TimeIsMoneySystem
+
         } else {
             PlayerBalance newPlayerBalance = PlayerBalance.builder()
                     .playerUUID(player.getUniqueId().toString())
