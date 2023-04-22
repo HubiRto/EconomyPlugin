@@ -2,12 +2,16 @@ package pl.pomoku.economyplugin;
 
 import com.virtame.menusystem.commands_system.EzCommand;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.reflections.Reflections;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import pl.pomoku.economyplugin.service.PlayerBalanceService;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
@@ -17,9 +21,11 @@ public final class EconomyPlugin extends JavaPlugin {
     public static EconomyPlugin plugin;
     public static PlayerBalanceService playerBalanceService;
 
+    @SneakyThrows
     @Override
     public void onEnable() {
         plugin = this;
+        loadLogo();
         saveDefaultConfig();
 
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
@@ -58,6 +64,16 @@ public final class EconomyPlugin extends JavaPlugin {
                 e.printStackTrace();
             }
         }
+    }
+    private void loadLogo() throws IOException {
+        InputStreamReader inputStreamReader = new InputStreamReader(
+                plugin.getClassLoader().getResourceAsStream("Banner.txt"));
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        String line;
+        while ((line = bufferedReader.readLine()) != null){
+            plugin.getServer().getConsoleSender().sendMessage(line);
+        }
+        bufferedReader.close();
     }
 
 }
