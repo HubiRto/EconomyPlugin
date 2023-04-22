@@ -7,12 +7,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.reflections.Reflections;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import pl.pomoku.economyplugin.manager.TimeIsMoneyManager;
 import pl.pomoku.economyplugin.service.PlayerBalanceService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 @Getter
@@ -20,6 +23,7 @@ public final class EconomyPlugin extends JavaPlugin {
     private static AnnotationConfigApplicationContext applicationContext;
     public static EconomyPlugin plugin;
     public static PlayerBalanceService playerBalanceService;
+    public static TimeIsMoneyManager timeIsMoneyManager;
 
     @SneakyThrows
     @Override
@@ -34,6 +38,7 @@ public final class EconomyPlugin extends JavaPlugin {
         applicationContext.refresh();
 
         playerBalanceService = (PlayerBalanceService) applicationContext.getBean("playerBalanceService");
+        timeIsMoneyManager = new TimeIsMoneyManager(new HashMap<>(), new ArrayList<>());
 
         loadListenersAndCommands();
     }
