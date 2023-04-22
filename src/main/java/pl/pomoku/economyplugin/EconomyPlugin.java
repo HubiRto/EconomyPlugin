@@ -27,6 +27,8 @@ public final class EconomyPlugin extends JavaPlugin {
         applicationContext.scan("pl.pomoku.economyplugin");
         applicationContext.refresh();
 
+        playerBalanceService = (PlayerBalanceService) applicationContext.getBean("playerBalanceService");
+
         loadListenersAndCommands();
     }
 
