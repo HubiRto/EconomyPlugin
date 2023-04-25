@@ -2,3 +2,5 @@ name: EconomyPlugin
 version: '${project.version}'
 main: pl.pomoku.economyplugin.EconomyPlugin
 api-version: 1.19
+commands:
+  money:

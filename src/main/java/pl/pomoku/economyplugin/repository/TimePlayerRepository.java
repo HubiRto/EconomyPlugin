@@ -1,12 +1,11 @@
 package pl.pomoku.economyplugin.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.pomoku.economyplugin.entity.PlayerBalance;
 import pl.pomoku.economyplugin.entity.TimePlayer;
 
-import java.util.Set;
+import java.util.List;
 
 public interface TimePlayerRepository extends JpaRepository<TimePlayer, Long> {
     TimePlayer findByPlayerUUID(String playerUUID);
-    Set<TimePlayer> findAllByTookAllMoneyIsFalse();
+    List<TimePlayer> findAllByTookAllMoneyIsFalse();
 }

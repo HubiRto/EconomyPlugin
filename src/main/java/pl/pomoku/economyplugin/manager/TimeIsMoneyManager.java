@@ -9,7 +9,6 @@ import pl.pomoku.economyplugin.entity.TimePlayer;
 
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Set;
 
 import static com.virtame.menusystem.text.MiniMes.mmd;
 import static pl.pomoku.economyplugin.EconomyPlugin.*;
@@ -28,11 +27,11 @@ public class TimeIsMoneyManager {
                 }
 
                 long currentTime = System.currentTimeMillis();
-                Set<TimePlayer> timePlayers = timePlayerService.findAllByTookAllMoneyIsFalse();
+                List<TimePlayer> timePlayers = timePlayerService.findAllByTookAllMoneyIsFalse();
                 for(Player player : Bukkit.getOnlinePlayers()){
                     for(TimePlayer timePlayer : timePlayers){
                         if(timePlayer.getPlayerUUID().equals(player.getUniqueId().toString())) {
-                            if(currentTime > timePlayer.getLastTimeCollect() + 1000 * 60 * 5){
+                            if(currentTime > timePlayer.getLastTimeCollect() + 1000 * 20){
                                 if(timePlayer.getCollectCounter() + 1 == 20) {
                                     timePlayer.setTookAllMoney(true);
                                     timePlayer.setCollectCounter(0);
@@ -45,11 +44,11 @@ public class TimeIsMoneyManager {
                                     playerBalance.setBalance(playerBalance.getBalance() + 50);
                                     player.sendMessage(mmd("Otrzymałeś 50 $ za 5 min gry."));
                                 }
-                                timePlayerService.updateTimePlayer(timePlayer);
                             }
                         }
                     }
                 }
+                timePlayerService.updateAll(timePlayers);
             }
         }.runTaskLaterAsynchronously(plugin, 5);
     }

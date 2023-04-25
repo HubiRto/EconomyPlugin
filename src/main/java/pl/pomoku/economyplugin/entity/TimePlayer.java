@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Data
@@ -15,6 +17,7 @@ import javax.persistence.Id;
 @NoArgsConstructor
 public class TimePlayer {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String playerUUID;
     private boolean tookAllMoney;
