@@ -1,6 +1,5 @@
 package pl.pomoku.economyplugin;
 
-import com.virtame.menusystem.commands_system.EzCommand;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.event.Listener;
@@ -10,13 +9,12 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import pl.pomoku.economyplugin.manager.TimeIsMoneyManager;
 import pl.pomoku.economyplugin.service.PlayerBalanceService;
 import pl.pomoku.economyplugin.service.TimePlayerService;
+import pl.pomoku.pomokupluginsrepository.commands.EasyCommand;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
 
 @Getter
@@ -44,6 +42,7 @@ public final class EconomyPlugin extends JavaPlugin {
 
         timeIsMoneyManager = new TimeIsMoneyManager();
         timeIsMoneyManager.run();
+        timeIsMoneyManager.runTimer();
 
         loadListenersAndCommands();
     }
@@ -65,9 +64,9 @@ public final class EconomyPlugin extends JavaPlugin {
             }
         }
 
-        for (Class<? extends EzCommand> clazz : new Reflections(packageName + ".command").getSubTypesOf(EzCommand.class)) {
+        for (Class<? extends EasyCommand> clazz : new Reflections(packageName + ".command").getSubTypesOf(EasyCommand.class)) {
             try {
-                EzCommand pluginCommand = clazz.getDeclaredConstructor().newInstance();
+                EasyCommand pluginCommand = clazz.getDeclaredConstructor().newInstance();
                 Objects.requireNonNull(getCommand(pluginCommand.getCommandInfo().name())).setExecutor(pluginCommand);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                      NoSuchMethodException e) {

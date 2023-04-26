@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface TimePlayerRepository extends JpaRepository<TimePlayer, Long> {
     TimePlayer findByPlayerUUID(String playerUUID);
-    List<TimePlayer> findAllByTookAllMoneyIsFalse();
 }

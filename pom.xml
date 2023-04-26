@@ -14,7 +14,7 @@
     <properties>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <server.plugin.directory>/home/hubert/McServers/test1.19.4/plugins</server.plugin.directory>
+        <server.plugin.directory></server.plugin.directory>
     </properties>
 
     <build>
@@ -109,10 +109,15 @@
             <artifactId>spring-data-jpa</artifactId>
             <version>2.5.2</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.virtame</groupId>-->
+<!--            <artifactId>VirtameRepo</artifactId>-->
+<!--            <version>1.4</version>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>com.virtame</groupId>
-            <artifactId>VirtameRepo</artifactId>
-            <version>1.4</version>
+            <groupId>pl.pomoku</groupId>
+            <artifactId>PomokuPluginsRepository</artifactId>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
