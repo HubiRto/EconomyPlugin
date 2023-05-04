@@ -13,9 +13,9 @@ public class Withdraw extends EasyCommand {
 
     }
 
-    private static boolean isPlayerHaveFreeSlot(Player player){
-        Inventory inventory = player.getInventory();
-        for(int i = 0; i < inventory.getSize(); i++){
-        }
-    }
+//    private static boolean isPlayerHaveFreeSlot(Player player){
+//        Inventory inventory = player.getInventory();
+//        for(int i = 0; i < inventory.getSize(); i++){
+//        }
+//    }
 }

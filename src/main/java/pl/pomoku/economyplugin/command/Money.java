@@ -25,7 +25,7 @@ public class Money extends EasyCommand {
                     + playerBalance.getBalance()));
         } else {
             playerBalance = playerBalanceService.findPlayerBalanceByPlayer(player);
-            player.sendMessage(strToComp("<gray>Masz na koncie: <green>" + playerBalance.getBalance()));
+            player.sendMessage(strToComp("<gray>Stan konta: <green>" + playerBalance.getBalance() + "$"));
         }
     }
 }

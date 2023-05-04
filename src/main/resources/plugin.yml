@@ -4,3 +4,8 @@ main: pl.pomoku.economyplugin.EconomyPlugin
 api-version: 1.19
 commands:
   money:
+    aliases:
+      - kasa
+  withdraw:
+    aliases:
+      - wyplac
