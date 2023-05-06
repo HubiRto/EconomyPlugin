@@ -18,6 +18,7 @@ services:
       - ./plugins:/plugins
   db:
     image: mariadb
+    container_name: TestDatabase
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: mc
