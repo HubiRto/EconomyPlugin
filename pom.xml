@@ -112,7 +112,7 @@
         <dependency>
             <groupId>pl.pomoku</groupId>
             <artifactId>PomokuPluginsRepository</artifactId>
-            <version>1.2</version>
+            <version>1.4.3</version>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
