@@ -38,9 +38,9 @@ public class Withdraw extends EasyCommand {
         }
 
         playerBalance.setBalance(playerBalance.getBalance() - money);
+        playerBalanceService.updatePlayerBalance(playerBalance);
         ItemStack bill = new ItemBuilder(Material.PAPER)
                 .displayname(strToComp("<aqua>Banknot <green>" + money + "$"))
-                .glow()
                 .build();
         p.getInventory().addItem(bill);
         p.sendMessage(strToComp("<gray>Wypłacono <green>" + money + "$</green> z konta."));
