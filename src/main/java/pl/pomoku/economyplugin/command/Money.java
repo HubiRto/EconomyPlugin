@@ -1,9 +1,9 @@
 package pl.pomoku.economyplugin.command;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -62,10 +62,38 @@ public class Money extends EasyCommand implements TabCompleter {
         if (args.length == 0) {
             handlePlayerBalanceCommand(player);
         } else if (args.length == 1) {
-            handlePlayerTopCommand(player, args);
+            handlePlayerOneArg(args, player);
         } else if (args.length == 3) {
             handlePlayerMoneyCommand(args, player);
         }
+    }
+
+    /**
+     * Obsługuje operacje dla gracza, gdy ma tylko jeden argument.
+     *
+     * @param args   argumenty komendy
+     * @param player obiekt reprezentujący nadawcę komendy (gracza)
+     */
+    private void handlePlayerOneArg(String[] args, Player player) {
+        switch (args[0]) {
+            case "top" -> handlePlayerTopCommand(player, args);
+            default -> handlePlayerOtherBalanceCommand(player, args);
+        }
+    }
+
+    /**
+     * Obsługuje komendę związane z wyświetleniem stanu konta dla innego gracza.
+     *
+     * @param player obiekt reprezentujący nadawcę komendy (gracza)
+     * @param args   argumenty komendy
+     */
+    private void handlePlayerOtherBalanceCommand(Player player, String[] args) {
+        if (!player.hasPermission("eco.balance.others")) return;
+        String targetName = args[0];
+        PlayerBalance targetBalance = findPlayerBalance(targetName, player);
+        Component text = strToComp("<gray>Stan konta gracza " + targetName
+                + ": <green>" + targetBalance.getBalance() + "$");
+        player.sendMessage(text);
     }
 
     /**
@@ -216,7 +244,7 @@ public class Money extends EasyCommand implements TabCompleter {
     private static PlayerBalance findPlayerBalance(String playerName, CommandSender sender) {
         PlayerBalance targetBalance = playerBalanceService.findPlayerBalanceByPlayerName(playerName);
         if (targetBalance == null) {
-            sender.sendMessage(strToComp("<red>Nie znaleziono gracza."));
+            sender.sendMessage(strToComp("<red>Brak danych o koncie gracza: <gray>" + playerName));
         }
         return targetBalance;
     }
@@ -244,16 +272,105 @@ public class Money extends EasyCommand implements TabCompleter {
      * @param message       wiadomość do wysłania
      * @param sender        obiekt reprezentujący nadawcę komendy
      */
-    private static void updateBalanceAndSendMessage(PlayerBalance targetBalance, int amount, String message, CommandSender sender) {
+    private static void updateBalanceAndSendMessage(
+            PlayerBalance targetBalance,
+            int amount,
+            String message,
+            CommandSender sender
+    ) {
         playerBalanceService.updatePlayerBalance(targetBalance);
         sender.sendMessage(strToComp(message));
     }
 
+    /**
+     * Obsługuje podpowiedzi dla komendy w zależności od nadawcy.
+     *
+     * @param commandSender obiekt reprezentujący nadawcę komendy
+     * @param command       komenda
+     * @param s             alias komendy
+     * @param args          argumenty komendy
+     * @return lista podpowiedzi dla komendy
+     */
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+    public @Nullable List<String> onTabComplete(
+            @NotNull CommandSender commandSender,
+            @NotNull Command command,
+            @NotNull String s,
+            @NotNull String[] args
+    ) {
+        if (commandSender instanceof Player player) {
+            return tabForPlayer(args, player);
+        } else {
+            return tabForConsole(args);
+        }
+    }
+
+    /**
+     * Generuje podpowiedzi dla komendy dla nadawcy będącego konsolą.
+     *
+     * @param args argumenty komendy
+     * @return lista podpowiedzi dla komendy
+     */
+    private static List<String> tabForConsole(String[] args) {
+        switch (args.length) {
+            case 1 -> {
+                return addAllPlayersNamesToTab(List.of("top", "add", "remove"));
+            }
+            case 2 -> {
+                switch (args[0]) {
+                    case "add", "remove" -> {
+                        return allPlayersNames();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Generuje podpowiedzi dla komendy dla nadawcy będącego graczem.
+     *
+     * @param args   argumenty komendy
+     * @param player gracz będący nadawcą komendy
+     * @return lista podpowiedzi dla komendy
+     */
+    private static List<String> tabForPlayer(String[] args, Player player) {
         List<String> tab = new ArrayList<>();
-        tab.add("top");
-        if (commandSender.hasPermission("eco.add") || commandSender instanceof ConsoleCommandSender) tab.add("add");
+        switch (args.length) {
+            case 1 -> {
+                tab.add("top");
+                if (player.hasPermission("eco.add")) tab.add("add");
+                if (player.hasPermission("eco.remove")) tab.add("remove");
+                if (player.hasPermission("eco.balance.others")) addAllPlayersNamesToTab(tab);
+                return tab;
+            }
+            case 2 -> {
+                if ((args[0].equals("add") && player.hasPermission("eco.add"))
+                        || (args[0].equals("remove") && player.hasPermission("eco.remove"))) {
+                    addAllPlayersNamesToTab(tab);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Dodaje wszystkie nazwy graczy do listy podpowiedzi.
+     *
+     * @param tab lista podpowiedzi
+     * @return lista podpowiedzi z dodanymi nazwami graczy
+     */
+    private static List<String> addAllPlayersNamesToTab(List<String> tab) {
+        tab.addAll(allPlayersNames());
         return tab;
+    }
+
+    /**
+     * Zwraca listę wszystkich nazw graczy online.
+     *
+     * @return lista nazw graczy
+     */
+    private static List<String> allPlayersNames() {
+        return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
     }
 }
