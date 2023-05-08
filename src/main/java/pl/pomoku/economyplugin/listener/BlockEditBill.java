@@ -15,7 +15,7 @@ public class BlockEditBill implements Listener {
         AnvilInventory anvilInventory = event.getInventory();
         ItemStack first = anvilInventory.getFirstItem();
         ItemStack result = anvilInventory.getResult();
-        if (!BanknoteUtils.isBanknot(first)) return;
+        if (!BanknoteUtils.isBanknote(first)) return;
         if (first == result) return;
         event.setResult(new ItemStack(AIR));
     }

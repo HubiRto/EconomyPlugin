@@ -6,6 +6,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import pl.pomoku.pomokupluginsrepository.items.ItemBuilder;
 
+import java.nio.ByteBuffer;
+
 import static org.bukkit.Material.PAPER;
 import static pl.pomoku.economyplugin.EconomyPlugin.plugin;
 import static pl.pomoku.pomokupluginsrepository.text.Text.strToComp;
@@ -19,12 +21,13 @@ public class BanknoteUtils {
                 .displayname(strToComp("<aqua>Banknot <green>" + amount + "$")).build();
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.getPersistentDataContainer().set(createKey(BANKNOTE_KEY), PersistentDataType.BYTE, (byte) 1);
-        itemMeta.getPersistentDataContainer().set(createKey(AMOUNT_KEY), PersistentDataType.INTEGER, amount);
+        byte[] amountBytes = intToBytes(amount);
+        itemMeta.getPersistentDataContainer().set(createKey(AMOUNT_KEY), PersistentDataType.BYTE_ARRAY, amountBytes);
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
 
-    public static boolean isBanknot(ItemStack itemStack) {
+    public static boolean isBanknote(ItemStack itemStack) {
         if (itemStack == null) return false;
         if (itemStack.getType() != PAPER) return false;
         ItemMeta meta = itemStack.getItemMeta();
@@ -33,14 +36,23 @@ public class BanknoteUtils {
     }
 
     public static int getBanknoteAmount(ItemStack itemStack) {
-        if (isBanknot(itemStack)) {
+        if (isBanknote(itemStack)) {
             ItemMeta itemMeta = itemStack.getItemMeta();
-            return itemMeta.getPersistentDataContainer().getOrDefault(createKey(AMOUNT_KEY), PersistentDataType.INTEGER, 0);
+            byte[] amountBytes = itemMeta.getPersistentDataContainer().get(createKey(AMOUNT_KEY), PersistentDataType.BYTE_ARRAY);
+            return bytesToInt(amountBytes);
         }
         return 0;
     }
 
     private static NamespacedKey createKey(String key) {
         return new NamespacedKey(plugin, key);
+    }
+
+    private static byte[] intToBytes(int value) {
+        return ByteBuffer.allocate(4).putInt(value).array();
+    }
+
+    private static int bytesToInt(byte[] bytes) {
+        return ByteBuffer.wrap(bytes).getInt();
     }
 }
