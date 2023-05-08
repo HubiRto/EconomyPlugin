@@ -24,21 +24,24 @@ public class Money extends EasyCommand implements TabCompleter {
     public void execute(CommandSender sender, String[] args) {
         PlayerBalance playerBalance;
         if (!(sender instanceof Player player)) {
-            if (args.length != 1) return;
-            Player soughtPlayer = Bukkit.getPlayer(args[0]);
-            if (soughtPlayer == null || !soughtPlayer.isOnline()) return;
-            playerBalance = playerBalanceService.findPlayerBalanceByPlayer(soughtPlayer);
-            if (playerBalance == null) return;
-            sender.sendMessage(strToComp("<gray>Gracz <aqua>" + soughtPlayer.getName() + "<aqua> ma na koncie: <green>"
-                    + playerBalance.getBalance()));
+            if (args.length == 1) {
+                Player soughtPlayer = Bukkit.getPlayer(args[0]);
+                if (soughtPlayer == null || !soughtPlayer.isOnline()) return;
+                playerBalance = playerBalanceService.findPlayerBalanceByPlayer(soughtPlayer);
+                if (playerBalance == null) return;
+                sender.sendMessage(strToComp("<gray>Gracz <aqua>" + soughtPlayer.getName() + "<aqua> ma na koncie: <green>"
+                        + playerBalance.getBalance()));
+            }else if(args.length == 3){
+                addMoney(args, sender);
+            }
         } else {
             if (args.length == 0) {
                 playerBalance = playerBalanceService.findPlayerBalanceByPlayer(player);
                 player.sendMessage(strToComp("<gray>Stan konta: <green>" + playerBalance.getBalance() + "$"));
-            }else if(args.length == 1) {
-                if(args[0].equals("top")){
+            } else if (args.length == 1) {
+                if (args[0].equals("top")) {
                     List<PlayerBalance> playersBalanceList = playerBalanceService.findTopPlayersByBalance(10);
-                    if(playersBalanceList != null) {
+                    if (playersBalanceList != null) {
                         String BORDER = "<dark_gray>[<red>+</red>]------------[<aqua>TOP</aqua>]------------[<red>+</red>]";
                         player.sendMessage(strToComp(BORDER));
                         for (int i = 0; i < playersBalanceList.size(); i++) {
@@ -47,22 +50,42 @@ public class Money extends EasyCommand implements TabCompleter {
                                     + playersBalanceList.get(i).getBalance() + "</green>$"));
                         }
                         player.sendMessage(strToComp(BORDER));
-                    }else {
+                    } else {
                         player.sendMessage(strToComp("<red>Nie ma graczy!"));
                     }
-                }else if(args[0].equals("add")){
-                    if(!player.hasPermission("eco.add")) return;
-
+                }
+            } else if (args.length == 3) {
+                if (args[0].equals("add")) {
+                    if (!player.hasPermission("eco.add")) return;
+                    addMoney(args, player);
                 }
             }
         }
+    }
+
+    private static void addMoney(String[] args, CommandSender sender) {
+        String target = args[1];
+        PlayerBalance targetBalance = playerBalanceService.findPlayerBalanceByPlayerName(target);
+        if (targetBalance == null) {
+            sender.sendMessage(strToComp("<red>Nie znaleziono gracza."));
+            return;
+        }
+        String amountStr = args[2];
+        if (!Withdraw.isNumeric(amountStr)){
+            sender.sendMessage(strToComp("<red>Nieprawidłowy format kwoty."));
+            return;
+        }
+        int amount = Integer.parseInt(amountStr);
+        targetBalance.setBalance(targetBalance.getBalance() + amount);
+        playerBalanceService.updatePlayerBalance(targetBalance);
+        sender.sendMessage(strToComp("<gray>Dodano <green>" + amountStr + "$</green> graczu <aqua>" + target));
     }
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         List<String> tab = new ArrayList<>();
         tab.add("top");
-        if(commandSender.hasPermission("eco.add") || commandSender instanceof ConsoleCommandSender) tab.add("add");
+        if (commandSender.hasPermission("eco.add") || commandSender instanceof ConsoleCommandSender) tab.add("add");
         return tab;
     }
 }

@@ -29,8 +29,13 @@ public class PlayerBalanceService {
     public PlayerBalance findPlayerBalanceByPlayerUUID(UUID uuid) {
         return playerBalanceRepository.findByPlayerUUID(uuid.toString());
     }
-    public PlayerBalance findPlayerBalanceByPlayer(Player player){
+
+    public PlayerBalance findPlayerBalanceByPlayer(Player player) {
         return findPlayerBalanceByPlayerUUID(player.getUniqueId());
+    }
+
+    public PlayerBalance findPlayerBalanceByPlayerName(String playerName) {
+        return playerBalanceRepository.findByPlayerName(playerName);
     }
 
     public List<PlayerBalance> findTopPlayersByBalance(int limit) {
