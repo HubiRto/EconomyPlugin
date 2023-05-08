@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import pl.pomoku.economyplugin.entity.PlayerBalance;
+import pl.pomoku.economyplugin.manager.BanknoteUtils;
 import pl.pomoku.pomokupluginsrepository.commands.CommandInfo;
 import pl.pomoku.pomokupluginsrepository.commands.EasyCommand;
 import pl.pomoku.pomokupluginsrepository.items.ItemBuilder;
@@ -39,10 +40,7 @@ public class Withdraw extends EasyCommand {
 
         playerBalance.setBalance(playerBalance.getBalance() - money);
         playerBalanceService.updatePlayerBalance(playerBalance);
-        ItemStack bill = new ItemBuilder(Material.PAPER)
-                .displayname(strToComp("<aqua>Banknot <green>" + money + "$"))
-                .build();
-        p.getInventory().addItem(bill);
+        p.getInventory().addItem(BanknoteUtils.create(money));
         p.sendMessage(strToComp("<gray>Wypłacono <green>" + money + "$</green> z konta."));
     }
 

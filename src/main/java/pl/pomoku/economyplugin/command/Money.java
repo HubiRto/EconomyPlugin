@@ -3,6 +3,7 @@ package pl.pomoku.economyplugin.command;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -49,6 +50,9 @@ public class Money extends EasyCommand implements TabCompleter {
                     }else {
                         player.sendMessage(strToComp("<red>Nie ma graczy!"));
                     }
+                }else if(args[0].equals("add")){
+                    if(!player.hasPermission("eco.add")) return;
+
                 }
             }
         }
@@ -58,6 +62,7 @@ public class Money extends EasyCommand implements TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         List<String> tab = new ArrayList<>();
         tab.add("top");
+        if(commandSender.hasPermission("eco.add") || commandSender instanceof ConsoleCommandSender) tab.add("add");
         return tab;
     }
 }
