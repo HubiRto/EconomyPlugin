@@ -141,20 +141,35 @@ public class Money extends EasyCommand implements TabCompleter {
      */
     private void handlePlayerTopCommand(Player player, String[] args) {
         if (!player.hasPermission("eco.top")) return;
-        if (args[0].equals("top")) {
-            List<PlayerBalance> playersBalanceList = playerBalanceService.findTopPlayersByBalance(10);
-            if (playersBalanceList != null) {
-                player.sendMessage(strToComp(TOP_BORDER));
-                for (int i = 0; i < playersBalanceList.size(); i++) {
-                    player.sendMessage(strToComp("<gray>" + (i + 1) + ". "
-                            + playersBalanceList.get(i).getPlayerName() + " <dark_gray>- <green>"
-                            + playersBalanceList.get(i).getBalance() + "</green>$"));
-                }
-                player.sendMessage(strToComp(TOP_BORDER));
-            } else {
-                player.sendMessage(strToComp("<red>Nie ma graczy!"));
-            }
+        List<PlayerBalance> playersBalanceList = playerBalanceService.findTopPlayersByBalance(10);
+        printTopTable(player, playersBalanceList);
+    }
+
+    /**
+     * Wyświetla tabelę z najlepszymi graczami dla danego gracza.
+     *
+     * @param player             Gracz, dla którego wyświetlana jest tabela.
+     * @param playerBalanceList  Lista obiektów PlayerBalance zawierających informacje o graczach.
+     */
+    private void printTopTable(Player player, List<PlayerBalance> playerBalanceList) {
+        player.sendMessage(strToComp(TOP_BORDER));
+        for (int i = 0; i < playerBalanceList.size(); i++) {
+            player.sendMessage(printPlayerInTopTable(playerBalanceList.get(i), i + 1));
         }
+        player.sendMessage(strToComp(TOP_BORDER));
+    }
+
+    /**
+     * Tworzy komponent zawierający informacje o graczu w tabeli.
+     *
+     * @param playerBalance  Obiekt PlayerBalance zawierający informacje o graczu.
+     * @param position       Pozycja gracza w tabeli.
+     * @return Komponent zawierający sformatowane informacje o graczu.
+     */
+    private Component printPlayerInTopTable(PlayerBalance playerBalance, int position){
+        String text = "<gray>" + position + ". " + playerBalance.getPlayerName() + " <dark_gray>- <green>"
+                + playerBalance.getBalance() + "</green>$";
+        return strToComp(text);
     }
 
     /**
